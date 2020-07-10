@@ -1,6 +1,6 @@
 ﻿namespace IntToString
 {
-    public enum RankStrings : uint
+    public enum RankStrings : ulong
     {
         hundred = 100,
         thousand = 1000,

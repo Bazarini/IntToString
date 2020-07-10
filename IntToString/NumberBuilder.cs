@@ -4,19 +4,21 @@ namespace IntToString
 {
     public static class NumberBuilder
     {
-        public static string BuildNumber(string input)
+        public static string BuildNumber(decimal input)
         {
-            string output = GetByRank((uint)float.Parse(input), RankStrings.billion);
-            if (output != "") output += " dollar";
-            if (float.Parse(input) % 1 != 0)
+            string output = GetByRank((ulong)input, RankStrings.billion);
+
+            if (output != "") output += $" dollar{((ulong)input != 1 ? "s" : "")}";
+            
+            if (input % 1 != 0)
             {
                 if (output != "")
                     output += " ";
-                output += GetDozens( (uint)Math.Round(float.Parse(input) % 1 * (uint)RankStrings.hundred)) + " cents";
+                output += GetDozens((ulong)Math.Round(input % 1 * (ulong)RankStrings.hundred)) + $" cent{((ulong)Math.Round(input % 1 * (ulong)RankStrings.hundred) != 1 ? "s" : "")}";
             }
-            return output;
+            return output.Trim();
         }
-        private static string GetDozens(uint number)
+        private static string GetDozens(ulong number)
         {
             if (Enum.IsDefined(typeof(Numbers), number))
                 return ((Numbers)number).ToString();
@@ -25,28 +27,30 @@ namespace IntToString
                 output += "-" + ((Numbers)(number % 10)).ToString();
             return output;
         }
-        private static string GetHundred(uint number)
+        private static string GetHundred(ulong number)
         {
             string output = "";
             if (number / 100 != 0)
             {
                 if (Enum.IsDefined(typeof(Numbers), number / 100))
-                    output += ((Numbers)(number / 100)).ToString() + " hundred ";
+                    output += $" {((Numbers)(number / 100)).ToString()} hundred";
             }
             if (number % 100 != 0)
-                output += GetDozens(number % 100);
+            {
+                output += $" {GetDozens(number % 100)}";
+            }
             return output;
         }
        
-        private static string GetByRank(uint number, RankStrings rank)
+        private static string GetByRank(ulong number, RankStrings rank)
         {
             string output = "";
-            if (number / (uint)rank != 0)
-                output += GetHundred(number / (uint)rank) + $" {rank.ToString()} ";
+            if (number / (ulong)rank != 0)
+                output += $"{GetHundred(number / (ulong)rank)} {rank.ToString()}";
 
 
             if (rank != RankStrings.thousand)
-                output += GetByRank(number % (uint)rank, (RankStrings)((uint)rank / 1000));
+                output += GetByRank(number % (ulong)rank, (RankStrings)((ulong)rank / 1000));
             else output += GetHundred(number % 1000);
             return output;
         }

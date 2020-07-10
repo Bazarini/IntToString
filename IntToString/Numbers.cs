@@ -1,6 +1,6 @@
 ﻿namespace IntToString
 {
-    public enum Numbers : uint
+    public enum Numbers : ulong
     {
         one = 1,
         two = 2,
@@ -22,7 +22,7 @@
         eighteen = 18,
         nineteen = 19
     }
-    public enum DozenPart : uint
+    public enum DozenPart : ulong
     {
         twen = 2,
         thir = 3,
